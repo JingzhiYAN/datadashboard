@@ -3,89 +3,88 @@
 
 <head>
     <title>Data Display from Database</title>
-    <link rel="stylesheet" href='static/bootstrap-5.3.2-dist/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.3.2-dist/css/bootstrap.min.css') }}">
 
 </head>
 <body>
+
     <div class="container mt-4">
-    <h1>Offline Aps</h1>
-        <div class="table-responsive">
-           <table class="table table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th>name</th>
-                    <th>IP</th>
-                    <th>SN</th>
-                    <th>MAC</th>
-                    <th>program_mac</th>
-                    <th>switch_name</th>
-                    <th>port</th>
-                    <th>elv_address</th>
-                    <th>mask</th>
-                    <th>gate</th>
-                    <th>status</th>
-                    <th>made</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
-                <tr>
-                    <td>{{row[0]}}</td>
-                    <td>{{row[1]}}</td>
-                    <td>{{row[2]}}</td>
-                    <td>{{row[3]}}</td>
-                    <td>{{row[4]}}</td>
-                    <td>{{row[5]}}</td>
-                    <td>{{row[6]}}</td>
-                    <td>{{row[7]}}</td>
-                    <td>{{row[8]}}</td>
-                    <td>{{row[9]}}</td>
-                    <td>{{row[10]}}</td>
-                    <td>{{row[11]}}</td>
-
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class = "container row h2">
+            <p class = "text-center">细节数据（点击查看细节列表）</p>
+        <div class = "col-md-3">
+            <a href = "{{ url_for('offline.offline_page') }}">离线数:{{ countoffline }}</a>
+        </div>
+        <div class = "col-md-3">
+            <a href = "">在线数:{{ countonline }}</a>
+        </div>
+        <div class = "col-md-3">
+            <a href = "">未安装数:{{ countuninstalled }}</a>
+        </div>
+        <div class = "col-md-3">
+            <a href = "">暂时不装数:{{ countplanned }}</a>
         </div>
     </div>
-    <div class="container mt-4">
-<h1 class = ".col-md-6">Offline Aps for public share: {{ countoffline }}</h1>
-    <div class="table-responsive">
-       <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>name</th>
-                <th>MAC</th>
-                <th>program_mac</th>
-                <th>switch_name</th>
-                <th>port</th>
-
-                <th>status</th>
-                <th>made</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                <td>{{row[0]}}</td>
-                <td>{{row[3]}}</td>
-                <td>{{row[4]}}</td>
-                <td>{{row[5]}}</td>
-                <td>{{row[6]}}</td>
-
-                <td>{{row[10]}}</td>
-                <td>{{row[11]}}</td>
-
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
     </div>
-</div>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <div class = "container row h2">
+            <p class = "text-center">大一点的数据XD</p>
+        <div class = "col-md-3">
+            <p>总计划安装:{{ countoffline+countonline+countuninstalled+countplanned }}</p>
+        </div>
+        <div class = "col-md-3">
+            <p>剩余放装AP:100</p>
+        </div>
+        <div class = "col-md-3">
+            <P>剩余面板AP:100</P>
+        </div>
+        <div class = "col-md-3">
+            <a href = "">暂时不装数:{{ countplanned }}</a>
+        </div>
+    </div>
+    </div>
 
+
+<!--other introductions to the page. About why this is built.-->
+ <div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom">What is this actually?</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"/></svg>
+        </div>
+        <h3 class="fs-2 text-body-emphasis">拓扑工具</h3>
+        <p>网络工程师的知识领域，拓扑图，topology代表的是网络领域的分布图。但是对于一个外行人来说，他不想一辈子做外行人，需要一个符合他的认知方式的知识拓扑。而这个页面其实就是我对网络工程认识结果的一个拓扑图。</p>
+        <a href="#" class="icon-link">
+          没想好
+          <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#people-circle"/></svg>
+        </div>
+        <h3 class="fs-2 text-body-emphasis">管理工具</h3>
+        <p>在工作上学习知识，那肯定是不脱产的，所以这个页面同时也是个管理工具，用于完成我在现实中的工作。用程序巡查整个医院的网络，然后发现其中的问题。听说公司也会做一个。那可就跟我没啥关系了。</p>
+        <a href="#" class="icon-link">
+          没想好
+          <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#toggles2"/></svg>
+        </div>
+        <h3 class="fs-2 text-body-emphasis">一个作品</h3>
+        <p>这个页面是我的一个作品。我其实一直想做一个这样的，基于物理设备基础的管理器。我不再是去做那些虚无缥缈的东西。而是明确的，物质的，东西。而且还有个问题，网络角度，一家医院的运行到底都需要什么？</p>
+        <a href="#" class="icon-link">
+          没想好
+          <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
     <form action="/update_database" method="post">
         <button type="submit" id="updateButton" class="btn btn-primary">Update Database</button>
         <div id="status"></div>

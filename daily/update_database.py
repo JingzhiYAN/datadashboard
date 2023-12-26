@@ -115,7 +115,7 @@ with open('output.csv', 'r', encoding='utf-8') as csvfile:
             continue
         search_data = row[3]
 
-        sql = f"UPDATE apdatabase SET status = 'online' WHERE program_mac = '{search_data}'"
+        sql = f"UPDATE apdatabase SET status = 'online', update_time = CURRENT_TIMESTAMP WHERE program_mac = '{search_data}'"
         cursor.execute(sql)
         if cursor.rowcount > 0:
             print(f"Successfully modified data for MAC address: {search_data}")
