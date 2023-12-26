@@ -40,11 +40,49 @@
             <P>剩余面板AP:100</P>
         </div>
         <div class = "col-md-3">
-            <a href = "">暂时不装数:{{ countplanned }}</a>
+            <a href = "">重点掉线:{{ countplanned }}</a>
         </div>
     </div>
     </div>
 
+    <div class="container mt-4">
+        <div class = "container row h2">
+            <p class = "text-center">网工小知识</p>
+        <div class = "col-md-3">
+            <a>级联线表:{{ countoffline+countonline+countuninstalled+countplanned }}</a>
+        </div>
+        <div class = "col-md-3">
+            <a>vlan规划表</a>
+        </div>
+        <div class = "col-md-3">
+            <a>机柜图</a>
+        </div>
+        <div class = "col-md-3">
+            <a href = "">重点掉线:{{ countplanned }}</a>
+        </div>
+    </div>
+    </div>
+
+    <!--Search function for AP status check-->
+    <div class = "container text-center">
+
+    <h1>Search items</h1>
+    <form action="/search" method="post">
+        <input type="text" name="search" placeholder="Search...">
+        <button type="submit">搜索AP</button>
+    </form>
+
+    <h2>Search Results</h2>
+    <ul>
+        {% for item in items %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if search_query %}
+        <p>Your search query: <strong>{{ search_query }}</strong></p>
+    {% endif %}
+</div>
 
 <!--other introductions to the page. About why this is built.-->
  <div class="container px-4 py-5" id="featured-3">
@@ -86,7 +124,11 @@
     </div>
   </div>
     <form action="/update_database" method="post">
-        <button type="submit" id="updateButton" class="btn btn-primary">Update Database</button>
+        <button type="submit" id="updateButton" class="btn btn-primary">Update APdatabase</button>
+        <div id="status"></div>
+    </form>
+        <form action="/update_database" method="post">
+        <button type="submit" id="updateButton" class="btn btn-primary">Update switchbase(dev)</button>
         <div id="status"></div>
     </form>
     <script src="static/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
