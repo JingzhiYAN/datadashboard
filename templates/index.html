@@ -3,60 +3,94 @@
 
 <head>
     <title>Data Display from Database</title>
-    <link rel="stylesheet" href='static/bootstrap-5.3.2-dist/css/bootstrap.css'>
-    <script src="static/bootstrap-5.3.2-dist/js/bootstrap.js"></script>
-    <script src="static/myowns/js/customized.js"></script>
+    <link rel="stylesheet" href='static/bootstrap-5.3.2-dist/css/bootstrap.min.css'>
+
 </head>
 <body>
-    <div class = 'container mt-4'>
+    <div class="container mt-4">
     <h1>Offline Aps</h1>
-    <div class="table-responsive">
+        <div class="table-responsive">
+           <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>name</th>
+                    <th>IP</th>
+                    <th>SN</th>
+                    <th>MAC</th>
+                    <th>program_mac</th>
+                    <th>switch_name</th>
+                    <th>port</th>
+                    <th>elv_address</th>
+                    <th>mask</th>
+                    <th>gate</th>
+                    <th>status</th>
+                    <th>made</th>
 
-       <table border="1" class="table table-bordered">
-        <thead class = "thread-dark">
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                    <td>{{row[6]}}</td>
+                    <td>{{row[7]}}</td>
+                    <td>{{row[8]}}</td>
+                    <td>{{row[9]}}</td>
+                    <td>{{row[10]}}</td>
+                    <td>{{row[11]}}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="container mt-4">
+<h1 class = ".col-md-6">Offline Aps for public share: {{ countoffline }}</h1>
+    <div class="table-responsive">
+       <table class="table table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>name</th>
-                <th>IP</th>
-                <th>SN</th>
                 <th>MAC</th>
                 <th>program_mac</th>
                 <th>switch_name</th>
                 <th>port</th>
-                <th>elv_address</th>
-                <th>mask</th>
-                <th>gate</th>
+
                 <th>status</th>
                 <th>made</th>
-                <!-- Add more table headers for each column in your_table_name -->
+
             </tr>
         </thead>
         <tbody>
             {% for row in data %}
             <tr>
-                <td>{{ row[0]}}</td>
-                <td>{{ row[1]}}</td>
-                <td>{{ row[2]}}</td>
-                <td>{{ row[3]}}</td>
-                <td>{{ row[4]}}</td>
-                <td>{{ row[5]}}</td>
-                <td>{{ row[6]}}</td>
-                <td>{{ row[7]}}</td>
-                <td>{{ row[8]}}</td>
-                <td>{{ row[9]}}</td>
-                <td>{{ row[10]}}</td>
-                <td>{{ row[11]}}</td>
-                <!-- Access each column in your_table_name using the row object -->
+                <td>{{row[0]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+
+                <td>{{row[10]}}</td>
+                <td>{{row[11]}}</td>
+
             </tr>
             {% endfor %}
         </tbody>
     </table>
     </div>
-    </div>
+</div>
 
-    <!-- Your form goes here -->
     <form action="/update_database" method="post">
         <button type="submit" id="updateButton" class="btn btn-primary">Update Database</button>
         <div id="status"></div>
     </form>
+    <script src="static/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+    <script src="static/myowns/js/customized.js"></script>
 </body>
 </html>

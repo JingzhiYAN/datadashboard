@@ -44,18 +44,21 @@ def index():
             # Execute the SQL query to fetch data from the table
             sql_query = "SELECT * FROM apdatabase WHERE status = 'offline';"
             cursor.execute(sql_query)
-
-            # Fetch all rows from the result set
             offlineAP = cursor.fetchall()
+
+            cursor.execute("SELECT COUNT(*) FROM apdatabase WHERE status = 'offline'")
+            countoffline = cursor.fetchone()
+            # Fetch all rows from the result set
+
 
     except pymysql.Error as e:
         # Handle any potential MySQL errors
         print(f"Error: {e}")
-        offlineAP = []  # Set data as empty list in case of an error
-        # Close the database connection
+        offlineAP = []# Set data as empty list in case of an error
+        countoffline = []
 
     # Render the HTML template with the fetched data
-    return render_template('index.html', data=offlineAP)
+    return render_template('index.html', data=offlineAP, countoffline = countoffline)
 
 if __name__ == '__main__':
     app.run(debug=True)
