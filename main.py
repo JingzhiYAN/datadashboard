@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for,jsonify
 from blueprints.data import full_data_update
-from blueprints.pages import offline_bp
+from blueprints.pages import offline_bp,offline_switch
 import subprocess
 import time
 import pymysql

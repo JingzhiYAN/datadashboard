@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Offlineswitch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.3.2-dist/css/bootstrap.min.css') }}">
+
+</head>
+<body>
+    <h1>Offline switch count: {{ countofflineswitch }}</h1>
+        <div class="table-responsive">
+           <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>网管地址</th>
+                    <th>掩码</th>
+                    <th>Vlan</th>
+                    <th>SN</th>
+                    <th>登陆方式</th>
+                    <th>设备角色</th>
+                    <th>楼层</th>
+                    <th>机柜U数</th>
+                    <th>弱电间</th>
+                    <th>厂商</th>
+                    <th>备注</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in offlineswitch %}
+                <tr>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[7]}}</td>
+                    <td>{{row[8]}}</td>
+                    <td>{{row[9]}}</td>
+                    <td>{{row[10]}}</td>
+                    <td>{{row[11]}}</td>
+                    <td>{{row[12]}}</td>
+                    <td>{{row[13]}}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static',filename ='bootstrap-5.3.2-dist/js/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static',filename ='myowns/js/customized.js')}}"></script>
+</body>
+</html>

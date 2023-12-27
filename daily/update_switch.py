@@ -12,15 +12,15 @@ def read_credentials_from_file(file_path):
         databasepassword = lines[3].strip()
         databasename = lines[4].strip()
         hostname = lines[5].strip()
-        ssh_host = lines[7].strip()
-    return switchusername, switchpassword,databaseusername,databasepassword,databasename,hostname,ssh_host
+    return switchusername, switchpassword,databaseusername,databasepassword,databasename,hostname
 
 # File path containing username and password
 credentials_file = 'daily/credentials.txt'
 
 # Read username and password from the file
-switchusername, switchpassword,databaseusername,databasepassword, databasename,hostname,ssh_host= read_credentials_from_file(credentials_file)
+switchusername, switchpassword,databaseusername,databasepassword, databasename,hostname= read_credentials_from_file(credentials_file)
 # SSH connection details
+ssh_host = ssh_host
 ssh_port = 22  # Default SSH port
 ssh_username = switchusername
 ssh_password = switchpassword

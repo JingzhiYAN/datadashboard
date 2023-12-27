@@ -58,7 +58,7 @@
             <a>机柜图</a>
         </div>
         <div class = "col-md-3">
-            <a href = "">重点掉线:{{ countplanned }}</a>
+            <a href = "{{ url_for('offline.offline_switch') }}">交换机情况:{{ countswitchoffline }}</a>
         </div>
     </div>
     </div>

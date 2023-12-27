@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 import pymysql
 # Create a blueprint object
-offline_bp = Blueprint('offline', __name__, url_prefix='/offlineap')
+offline_bp = Blueprint('offline', __name__)
 def read_credentials_from_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -20,7 +20,7 @@ credentials_file = 'daily/credentials.txt'
 switchusername, switchpassword,databaseusername,databasepassword, databasename,hostname= read_credentials_from_file(credentials_file)
 cursorclass =  'pymysql.cursors.DictCursor'
 # Define a route within the blueprint
-@offline_bp.route('/')
+@offline_bp.route('/offline')
 def offline_page():
     # Your logic to render the table here
     # For example, rendering a template named offline.html
@@ -47,3 +47,31 @@ def offline_page():
         offlineAP = []# Set data as empty list in case of an error
         countoffline = []
     return render_template('offline.html', offlineAP=offlineAP,countoffline=countoffline)
+
+@offline_bp.route('/offlineswitch')
+def offline_switch():
+    # Your logic to render the table here
+    # For example, rendering a template named offline.html
+    # Replace this with your actual logic
+    try:
+        # Connect to the MySQL database
+        connection = pymysql.connect(host=hostname, user=databaseusername, password=databasepassword, database=databasename)
+        cursor = connection.cursor()
+
+        with connection.cursor() as cursor:
+
+            # offline list.
+            sql_query = "SELECT * FROM obmanage WHERE status = 'offline';"
+            cursor.execute(sql_query)
+            offlineswitch = cursor.fetchall()
+
+            # Count the offline APs.
+            cursor.execute("SELECT COUNT(*) FROM obmanage WHERE status = 'offline'")
+            countoffline = cursor.fetchone()
+            countofflineswitch = next(iter(countoffline or []), 0)
+    except pymysql.Error as e:
+        # Handle any potential MySQL errors
+        print(f"Error: {e}")
+        countofflineswitch = []# Set data as empty list in case of an error
+        offlineswitch = []
+    return render_template('offlineswitch.html', countofflineswitch=countofflineswitch,offlineswitch=offlineswitch)
