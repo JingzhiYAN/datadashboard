@@ -1,8 +1,33 @@
-import paramiko
-import time
 import csv
 from datetime import datetime
+import subprocess
 import pymysql
+
+def senderx(ip_address):
+    ping_count = 5  # Number of ping attempts
+    timeout = 5  # Timeout for each ping attempt
+
+    # Constructing the ping command within cmd.exe
+    ping_cmd = f"/c ping -n {ping_count} -w {timeout * 1000} {ip_address}"  # Using milliseconds for timeout
+
+    try:
+        # Run the cmd.exe command with the ping command as an argument
+        ping_output = subprocess.run(["C:\\WINDOWS\\system32\\cmd.exe", ping_cmd], capture_output=True, text=True, timeout=timeout+1)
+
+        # Check the return code to determine if the device is reachable
+        if ping_output.returncode == 0:
+            # If the device replies to the ping
+            return 'deviceon'
+        else:
+            # If the device is down or unreachable
+            return 'devicedown'
+
+    except subprocess.TimeoutExpired:
+        # If the ping command times out
+        return 'devicedown'
+
+
+
 def read_credentials_from_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -20,109 +45,55 @@ credentials_file = 'daily/credentials.txt'
 # Read username and password from the file
 switchusername, switchpassword,databaseusername,databasepassword, databasename,hostname= read_credentials_from_file(credentials_file)
 # SSH connection details
-ssh_host = ssh_host
-ssh_port = 22  # Default SSH port
-ssh_username = switchusername
-ssh_password = switchpassword
-enable_password = switchpassword
-
-# Establish SSH connection
-ssh_client = paramiko.SSHClient()
-ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-try:
-    ssh_client.connect(ssh_host, port=ssh_port, username=ssh_username, password=ssh_password, timeout=10)
-    print("SSH connection established.")
-
-    # Create interactive shell
-    ssh_shell = ssh_client.invoke_shell()
-    time.sleep(1)
-
-    # Send 'enable' to enter enable mode
-    ssh_shell.send('enable\n')
-    time.sleep(1)
-
-    # Wait for 'Password:' prompt and send enable password
-    output = ssh_shell.recv(65535).decode('utf-8')
-    if 'Password:' in output:
-        ssh_shell.send(enable_password + '\n')
-        time.sleep(1)
-
-    # Send 'show ip arp' command
-    ssh_shell.send('terminal length 0\n')
-    ssh_shell.send('show ip arp\n')
-    time.sleep(2)  # Adjust as needed based on command execution time
-
-    output = ''
-
-    # Receive data in chunks
-    data = ssh_shell.recv(65535).decode('utf-8')
-    output += data
-    data = ssh_shell.recv(65535).decode('utf-8')
-    output += data
-
-
-    # Print the complete output
-    print(output)
-    ssh_shell.send('terminal no length\n')
-    # Send 'exit' command to terminate the session
-    ssh_shell.send('exit\n')
-
-    # Write accumulated lines to a new file
-    with open('output.txt', 'w') as file:
-            file.write(output)
-    file.close()
-    with open('output.txt','r', encoding = "utf-8") as newfile:
-        with open('output.csv', 'w', encoding="utf-8") as csv_file:
-            csv_writer = csv.writer(csv_file)
-            for row in newfile:
-                if "I" in row:
-                    elements = row.replace('\n','')
-                    elements = elements.split()
-
-                    csv_writer.writerow(elements)
-except paramiko.AuthenticationException as auth_exception:
-    print("Authentication failed:", str(auth_exception))
-except paramiko.SSHException as ssh_exception:
-    print("SSH connection failed:", str(ssh_exception))
-
-ssh_client.close()
-
-# Assuming 'data' contains the lines from the text file
-#update the database.
 
 connection = pymysql.connect(host=hostname, user=databaseusername, password=databasepassword, database=databasename)
 cursor = connection.cursor()
-# pre-process
-sql_offline = "UPDATE apdatabase SET status = 'offline' WHERE status = 'online'"
-
-# Execute the SQL command to update online APs to offline
+# aquire the ip address
+list_of_device_ip = []
 try:
-    cursor.execute(sql_offline)
-    connection.commit()
-    print("Online APs set to offline")
+    # Connect to the MySQL database
+
+    cursorclass = 'pymysql.cursors.DictCursor'
+    with connection.cursor() as cursor:
+
+        # offline list.
+        sql_query = "SELECT addresses FROM obmanage;"
+        cursor.execute(sql_query)
+        addresses = cursor.fetchall()
 except pymysql.Error as e:
-    connection.rollback()
-    print(f"Error setting online APs to offline: {e}")
+    # Handle any potential MySQL errors
+    print(f"Error: {e}")
+    countofflineswitch = []  # Set data as empty list in case of an error
+    offlineswitch = []
 
+for ip in addresses:
+    ip = next(iter(ip or []), 0)
+    result = senderx(ip)
+    connection = pymysql.connect(host=hostname, user=databaseusername, password=databasepassword,
+                                 database=databasename)
+    cursor = connection.cursor()
+    addresses = []
+    print(ip)
+    print(result)
+    if result == 'deviceon':
+        try:
+            command = sql_query = f"UPDATE obmanage SET status = 'online', update_time = CURRENT_TIMESTAMP WHERE addresses = '{ip}';"
+            cursor.execute(command)
+            connection.commit()
+            print("update successful")
+        except pymysql.Error as e:
+            connection.rollback()
+            print(f"failed: {e}")
 
-#it's better we do this in the same file.
-with open('output.csv', 'r', encoding='utf-8') as csvfile:
-    csvreader = csv.reader(csvfile)
-
-    for row in csvreader:
-        if not any(row):  # Check if the row is empty
-            continue
-        search_data = row[3]
-
-        sql = f"UPDATE apdatabase SET status = 'online', update_time = CURRENT_TIMESTAMP WHERE program_mac = '{search_data}'"
-        cursor.execute(sql)
-        if cursor.rowcount > 0:
-            print(f"Successfully modified data for MAC address: {search_data}")
-        else:
-            print(f"Error: MAC address '{search_data}' unchange")
-            # If this appear, doesn't mean it didn't found, it means there are no updates.
-    csvfile.close()
+    if result == 'devicedown':
+        try:
+            command = sql_query = f"UPDATE obmanage SET status = 'offline', update_time = CURRENT_TIMESTAMP WHERE addresses = '{ip}';"
+            cursor.execute(command)
+            connection.commit()
+            print("Update successful")
+        except pymysql.Error as e:
+            connection.rollback()
+            print(f"Failed{e}")
 cursor.close()
 connection.close()
 

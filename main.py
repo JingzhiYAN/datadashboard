@@ -36,6 +36,14 @@ def update_database():
 
     # Return a completion status as JSON
     return 'complete'
+@app.route('/update_switch', methods=['POST'])
+def update_switch():
+    # Run the Python script using subprocess
+    subprocess.run(['python', 'daily/update_switch.py'])
+    time.sleep(5)  # Simulate a delay of 5 seconds
+
+    # Return a completion status as JSON
+    return 'complete'
 
 @app.route('/')
 def index():
