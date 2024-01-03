@@ -86,6 +86,7 @@ except paramiko.AuthenticationException as auth_exception:
 except paramiko.SSHException as ssh_exception:
     print("SSH connection failed:", str(ssh_exception))
 
+print("finished")
 ssh_client.close()
 
 # Assuming 'data' contains the lines from the text file

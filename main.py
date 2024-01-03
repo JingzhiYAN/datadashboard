@@ -66,8 +66,12 @@ def index():
 
             # Count the online APs.
             cursor.execute("SELECT COUNT(*) FROM apdatabase WHERE status = 'online'")
+
+            global countonline
+            countonline = []
             countonline = cursor.fetchone()
             countonline = next(iter(countonline or []), 0)
+
 
             # Count the planned APs.
             cursor.execute("SELECT COUNT(*) FROM apdatabase WHERE status = 'uninstalled'")

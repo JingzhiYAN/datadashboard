@@ -75,3 +75,31 @@ def offline_switch():
         countofflineswitch = []# Set data as empty list in case of an error
         offlineswitch = []
     return render_template('offlineswitch.html', countofflineswitch=countofflineswitch,offlineswitch=offlineswitch)
+
+@offline_bp.route('/online')
+def online_page():
+    # Your logic to render the table here
+    # For example, rendering a template named offline.html
+    # Replace this with your actual logic
+    try:
+        # Connect to the MySQL database
+        connection = pymysql.connect(host=hostname, user=databaseusername, password=databasepassword, database=databasename)
+        cursor = connection.cursor()
+
+        with connection.cursor() as cursor:
+
+            # offline list.
+            sql_query = "SELECT * FROM apdatabase WHERE status = 'online';"
+            cursor.execute(sql_query)
+            onlineAP = cursor.fetchall()
+
+            # Count the offline APs.
+            cursor.execute("SELECT COUNT(*) FROM apdatabase WHERE status = 'online'")
+            countonline = cursor.fetchone()
+            countonline = next(iter(countonline or []), 0)
+    except pymysql.Error as e:
+        # Handle any potential MySQL errors
+        print(f"Error: {e}")
+        offlineAP = []# Set data as empty list in case of an error
+        countoffline = []
+    return render_template('online.html', onlineAP=onlineAP,countonline=countonline)

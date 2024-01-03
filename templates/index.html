@@ -15,7 +15,7 @@
             <a href = "{{ url_for('offline.offline_page') }}">离线数:{{ countoffline }}</a>
         </div>
         <div class = "col-md-3">
-            <a href = "">在线数:{{ countonline }}</a>
+            <a href = "{{ url_for('offline.online_page') }}">在线数:{{ countonline }}</a>
         </div>
         <div class = "col-md-3">
             <a href = "">未安装数:{{ countuninstalled }}</a>
